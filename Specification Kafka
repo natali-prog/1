@@ -15,7 +15,7 @@ Markdown# Спецификация обработки сообщений из т
 
 ## Входные данные
 
-**Ссылка на контракт Kafka:** ``
+**Ссылка на контракт Kafka:** `https://github.com/natali-prog/1/blob/main/Protobuf%20Kafka`
 
 ### Event (корневое сообщение)
 
