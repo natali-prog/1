@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package orders.events;
+
+import "google/protobuf/timestamp.proto";
+
+enum EventType {
+  UNSPECIFIED = 0; // не выбрано
+  CREATED = 1;     // создание заказа
+  UPDATED = 2;     // изменение статуса оплаты/данных заказа
+  DELETED = 3;     // отмена/удаление заказа/ оплаты
+}
+
+message Event {
+  string id = 1;                             // id ивента
+  EventType type = 2;                        // тип ивента
+  google.protobuf.Timestamp created_at = 3;  // дата и время ивента
+  Order order = 4;                           // модель заказа
+}
+
+message Order {
+  string id = 1;                             // id заказа
+  string user_id = 2;                        // id пользователя 
+  string course_id = 3;                      // id курса 
+  
+  double amount = 4;                         // сумма заказа/оплаты
+  string status = 5;                         // статус заказа (PENDING, PAID, CANCELED)
+
+  google.protobuf.Timestamp created_at = 6;  // дата и время создания заказа
+  google.protobuf.Timestamp updated_at = 7;  // дата и время обновления заказа (изменения статуса)
+}
