@@ -12,16 +12,16 @@ enum EventType {
 }
 
 message Event {
-  string id = 1;                             // id ивента
+  bytes id = 1;                             // id ивента
   EventType type = 2;                        // тип ивента
   google.protobuf.Timestamp created_at = 3;  // дата и время ивента
   Order order = 4;                           // модель заказа
 }
 
 message Order {
-  string id = 1;                             // id заказа
-  string user_id = 2;                        // id пользователя 
-  string course_id = 3;                      // id курса 
+  bytes id = 1;                             // id заказа
+  bytes user_id = 2;                        // id пользователя 
+  bytes course_id = 3;                      // id курса 
   
   double amount = 4;                         // сумма заказа/оплаты
   string status = 5;                         // статус заказа (PENDING, PAID, CANCELED)
