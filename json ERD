@@ -2,129 +2,627 @@
   "database": "sales_monitoring",
   "dbms": "PostgreSQL",
   "entities": [
-    {"name":"Category","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"name","type":"VARCHAR(100)","key":"UK","nullable":false}
-    ]},
-    {"name":"Product","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"category_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"name","type":"VARCHAR(255)","nullable":false},
-      {"name":"price","type":"NUMERIC(12,2)","nullable":false}
-    ]},
-    {"name":"Store","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"name","type":"VARCHAR(255)","nullable":false},
-      {"name":"address","type":"VARCHAR(500)","nullable":false},
-      {"name":"is_active","type":"BOOLEAN","nullable":false}
-    ]},
-    {"name":"Customer","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"first_name","type":"VARCHAR(100)","nullable":false},
-      {"name":"last_name","type":"VARCHAR(100)","nullable":false},
-      {"name":"phone","type":"VARCHAR(30)","key":"UK","nullable":true},
-      {"name":"email","type":"VARCHAR(255)","key":"UK","nullable":true}
-    ]},
-    {"name":"Order","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"customer_id","type":"BIGINT","key":"FK","nullable":true},
-      {"name":"seller_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"store_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"order_number","type":"VARCHAR(100)","key":"UK","nullable":false},
-      {"name":"created_at","type":"TIMESTAMP","nullable":false},
-      {"name":"total_amount","type":"NUMERIC(14,2)","nullable":false}
-    ]},
-    {"name":"Seller","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"store_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"first_name","type":"VARCHAR(100)","nullable":false},
-      {"name":"last_name","type":"VARCHAR(100)","nullable":false},
-      {"name":"is_active","type":"BOOLEAN","nullable":false}
-    ]},
-    {"name":"OrderItem","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"order_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"product_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"quantity","type":"INTEGER","nullable":false},
-      {"name":"unit_price","type":"NUMERIC(12,2)","nullable":false},
-      {"name":"amount","type":"NUMERIC(14,2)","nullable":false}
-    ]},
-    {"name":"Supplier","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"name","type":"VARCHAR(255)","key":"UK","nullable":false},
-      {"name":"status","type":"VARCHAR(30)","nullable":false},
-      {"name":"created_at","type":"TIMESTAMP","nullable":false}
-    ]},
-    {"name":"SupplierProduct","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"supplier_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"product_id","type":"BIGINT","key":"FK","nullable":false}
-    ],"constraints":["UNIQUE(supplier_id, supplier_product_code) — поле supplier_product_code удалено с диаграммы"]},
-    {"name":"Supply (ТТН)","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"supplier_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"warehouse_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"supply_number","type":"VARCHAR(100)","nullable":false},
-      {"name":"supply_date","type":"TIMESTAMP","nullable":false},
-      {"name":"status","type":"VARCHAR(30)","nullable":false}
-    ],"constraints":["UNIQUE(supplier_id, supply_number)"]},
-    {"name":"Warehouse","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"name","type":"VARCHAR(255)","nullable":false},
-      {"name":"address","type":"VARCHAR(500)","nullable":false},
-      {"name":"is_active","type":"BOOLEAN","nullable":false}
-    ]},
-    {"name":"SupplyItem (Товары в ТТН)","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"supply_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"product_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"quantity","type":"INTEGER","nullable":false},
-      {"name":"unit_price","type":"NUMERIC(12,2)","nullable":false}
-    ]},
-    {"name":"Stock","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"product_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"store_id","type":"BIGINT","key":"FK","nullable":true},
-      {"name":"warehouse_id","type":"BIGINT","key":"FK","nullable":true},
-      {"name":"quantity","type":"INTEGER","nullable":false},
-      {"name":"updated_at","type":"TIMESTAMP","nullable":false}
-    ]},
-    {"name":"ImportWithSupplier","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"supplier_id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"started_at","type":"TIMESTAMP","nullable":false},
-      {"name":"finished_at","type":"TIMESTAMP","nullable":true},
-      {"name":"status","type":"VARCHAR(30)","nullable":false},
-      {"name":"records_received","type":"INTEGER","nullable":false},
-      {"name":"records_processed","type":"INTEGER","nullable":false},
-      {"name":"records_failed","type":"INTEGER","nullable":false}
-    ]},
-    {"name":"ImportError","fields":[
-      {"name":"id","type":"BIGINT","key":"PK","nullable":false},
-      {"name":"importWithSupplier__id","type":"BIGINT","key":"FK","nullable":false},
-      {"name":"record_identifier","type":"VARCHAR(255)","nullable":true},
-      {"name":"error_code","type":"VARCHAR(50)","nullable":false},
-      {"name":"error_message","type":"TEXT","nullable":false},
-      {"name":"created_at","type":"TIMESTAMP","nullable":false}
-    ]}
+    {
+      "name": "Category",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "key": "UK",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "Product",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "category_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "key": "UK",
+          "nullable": false
+        },
+        {
+          "name": "price",
+          "type": "NUMERIC(12,2)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "Store",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "nullable": false
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR(500)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "phone",
+          "type": "VARCHAR(30)",
+          "key": "UK",
+          "nullable": true
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(255)",
+          "key": "UK",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "customer_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": true
+        },
+        {
+          "name": "seller_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "store_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "order_number",
+          "type": "VARCHAR(100)",
+          "key": "UK",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false
+        },
+        {
+          "name": "total_amount",
+          "type": "NUMERIC(14,2)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "Seller",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "store_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "OrderItem",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "order_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "unit_price",
+          "type": "NUMERIC(12,2)",
+          "nullable": false
+        },
+        {
+          "name": "amount",
+          "type": "NUMERIC(14,2)",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "Supplier",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "key": "UK",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "SupplierProduct",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "supplier_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        "UNIQUE(supplier_id, product_id)"
+      ]
+    },
+    {
+      "name": "Warehouse",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR(50)",
+          "key": "UK",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "nullable": false
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR(500)",
+          "nullable": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "Supply",
+      "description": "Поставка (ТТН)",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "supplier_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "warehouse_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "supply_number",
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        {
+          "name": "supply_date",
+          "type": "TIMESTAMP",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(30)",
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        "UNIQUE(supplier_id, supply_number)",
+        "CHECK(status IN ('NEW','RECEIVED','CANCELLED'))"
+      ]
+    },
+    {
+      "name": "SupplyItem",
+      "description": "Товары в ТТН",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "supply_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "unit_price",
+          "type": "NUMERIC(12,2)",
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        "UNIQUE(supply_id, product_id)",
+        "CHECK(quantity > 0)",
+        "CHECK(unit_price >= 0)"
+      ]
+    },
+    {
+      "name": "Stock",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "store_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": true
+        },
+        {
+          "name": "warehouse_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": true
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        "CHECK((store_id IS NOT NULL AND warehouse_id IS NULL) OR (store_id IS NULL AND warehouse_id IS NOT NULL))",
+        "CHECK(quantity >= 0)",
+        "UNIQUE(product_id, warehouse_id) WHERE warehouse_id IS NOT NULL",
+        "UNIQUE(product_id, store_id) WHERE store_id IS NOT NULL"
+      ]
+    },
+    {
+      "name": "ImportWithSupplier",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "supplier_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "started_at",
+          "type": "TIMESTAMP",
+          "nullable": false
+        },
+        {
+          "name": "finished_at",
+          "type": "TIMESTAMP",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(30)",
+          "nullable": false
+        },
+        {
+          "name": "records_received",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "records_processed",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "records_failed",
+          "type": "INTEGER",
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        "CHECK(status IN ('RUNNING','SUCCESS','PARTIAL','FAILED'))"
+      ]
+    },
+    {
+      "name": "ImportError",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BIGINT",
+          "key": "PK",
+          "nullable": false
+        },
+        {
+          "name": "import_id",
+          "type": "BIGINT",
+          "key": "FK",
+          "nullable": false
+        },
+        {
+          "name": "record_identifier",
+          "type": "VARCHAR(255)",
+          "nullable": true
+        },
+        {
+          "name": "severity",
+          "type": "VARCHAR(10)",
+          "nullable": false
+        },
+        {
+          "name": "error_code",
+          "type": "VARCHAR(50)",
+          "nullable": false
+        },
+        {
+          "name": "error_message",
+          "type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        "CHECK(severity IN ('ERROR','WARNING'))",
+        "error_code: MISSING_FIELD, NEGATIVE_QTY, NEGATIVE_PRICE, PRODUCT_NOT_FOUND, PRODUCT_NOT_LINKED, UNKNOWN_WAREHOUSE, FUTURE_DATE, DUPLICATE_ITEM, API_UNAVAILABLE, AUTH_ERROR, DB_ERROR"
+      ]
+    }
   ],
-  "relationships":[
-    {"from":"Category.id","to":"Product.category_id","cardinality":"1:N"},
-    {"from":"Store.id","to":"Seller.store_id","cardinality":"1:N"},
-    {"from":"Customer.id","to":"Order.customer_id","cardinality":"0..1:N"},
-    {"from":"Seller.id","to":"Order.seller_id","cardinality":"1:N"},
-    {"from":"Store.id","to":"Order.store_id","cardinality":"1:N"},
-    {"from":"Order.id","to":"OrderItem.order_id","cardinality":"1:N"},
-    {"from":"Product.id","to":"OrderItem.product_id","cardinality":"1:N"},
-    {"from":"Supplier.id","to":"SupplierProduct.supplier_id","cardinality":"1:N"},
-    {"from":"Product.id","to":"SupplierProduct.product_id","cardinality":"1:N"},
-    {"from":"Supplier.id","to":"Supply (ТТН).supplier_id","cardinality":"1:N"},
-    {"from":"Warehouse.id","to":"Supply (ТТН).warehouse_id","cardinality":"1:N"},
-    {"from":"Supply (ТТН).id","to":"SupplyItem (Товары в ТТН).supply_id","cardinality":"1:N"},
-    {"from":"Product.id","to":"SupplyItem (Товары в ТТН).product_id","cardinality":"1:N"},
-    {"from":"Product.id","to":"Stock.product_id","cardinality":"1:N"},
-    {"from":"Store.id","to":"Stock.store_id","cardinality":"1:N"},
-    {"from":"Warehouse.id","to":"Stock.warehouse_id","cardinality":"1:N"},
+  "relationships": [
+    {
+      "from": "Category.id",
+      "to": "Product.category_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Store.id",
+      "to": "Seller.store_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Customer.id",
+      "to": "Order.customer_id",
+      "cardinality": "0..1:N"
+    },
+    {
+      "from": "Seller.id",
+      "to": "Order.seller_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Store.id",
+      "to": "Order.store_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Order.id",
+      "to": "OrderItem.order_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Product.id",
+      "to": "OrderItem.product_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Supplier.id",
+      "to": "SupplierProduct.supplier_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Product.id",
+      "to": "SupplierProduct.product_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Supplier.id",
+      "to": "Supply.supplier_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Warehouse.id",
+      "to": "Supply.warehouse_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Supply.id",
+      "to": "SupplyItem.supply_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Product.id",
+      "to": "SupplyItem.product_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Product.id",
+      "to": "Stock.product_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "Store.id",
+      "to": "Stock.store_id",
+      "cardinality": "0..1:N"
+    },
+    {
+      "from": "Warehouse.id",
+      "to": "Stock.warehouse_id",
+      "cardinality": "0..1:N"
+    },
+    {
+      "from": "Supplier.id",
+      "to": "ImportWithSupplier.supplier_id",
+      "cardinality": "1:N"
+    },
+    {
+      "from": "ImportWithSupplier.id",
+      "to": "ImportError.import_id",
+      "cardinality": "1:N"
+    }
+  ]
+}
     {"from":"Supplier.id","to":"ImportWithSupplier.supplier_id","cardinality":"1:N"},
     {"from":"ImportWithSupplier.id","to":"ImportError.importWithSupplier__id","cardinality":"1:N"}
   ]
