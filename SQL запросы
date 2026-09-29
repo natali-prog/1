@@ -1,0 +1,34 @@
+1. Вставка новой записи в таблицу `products`
+INSERT INTO products (
+    category_id,
+    name,
+    price
+)
+VALUES (
+    1,
+    'Apple iPhone 17 256GB Black',
+    999.00;
+)
+2. Изменение информации о товаре
+UPDATE products
+SET
+    name = 'Apple iPhone 17 256GB Black',
+    price = 949.00
+WHERE id = 1;
+3. Удаление товара
+DELETE FROM products
+WHERE id = 1;
+4. Выборка всех товаров, сгруппированных по категориям
+SELECT
+    c.id AS category_id,
+    c.name AS category_name,
+    p.id AS product_id,
+    p.sku,
+    p.name AS product_name,
+    p.price
+FROM categories c
+JOIN products p
+    ON p.category_id = c.id
+ORDER BY
+    c.name,
+    p.name;
